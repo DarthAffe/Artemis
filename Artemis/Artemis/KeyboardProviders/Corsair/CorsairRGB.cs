@@ -32,7 +32,8 @@ namespace Artemis.KeyboardProviders.Corsair
             {
                 try
                 {
-                    CueSDK.Initialize();
+                    if (CueSDK.ProtocolDetails == null)
+                        CueSDK.Initialize();
                 }
                 catch (CUEException e)
                 {
@@ -62,7 +63,8 @@ namespace Artemis.KeyboardProviders.Corsair
         {
             try
             {
-                CueSDK.Initialize();
+                if (CueSDK.ProtocolDetails == null)
+                    CueSDK.Initialize(true);
             }
             catch (WrapperException)
             {

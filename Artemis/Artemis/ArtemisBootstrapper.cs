@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
+﻿using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
 using Artemis.ViewModels;
@@ -21,6 +19,8 @@ namespace Artemis
             Initialize();
         }
 
+        public Mutex Mutex { get; set; }
+
         protected override void ConfigureContainer(ContainerBuilder builder)
         {
             base.ConfigureContainer(builder);
@@ -38,8 +38,9 @@ namespace Artemis
 
         private void CheckDuplicateInstances()
         {
-            if (Process.GetProcesses().Count(p => p.ProcessName.Contains(Assembly.GetExecutingAssembly()
-                .FullName.Split(',')[0]) && !p.Modules[0].FileName.Contains("vshost")) < 2)
+            bool aIsNewInstance;
+            Mutex = new Mutex(true, "ArtemisMutex", out aIsNewInstance);
+            if (aIsNewInstance)
                 return;
 
             MessageBox.Show("An instance of Artemis is already running (check your system tray).",

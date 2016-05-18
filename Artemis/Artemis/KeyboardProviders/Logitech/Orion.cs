@@ -64,7 +64,7 @@ namespace Artemis.KeyboardProviders.Logitech
             LogitechGSDK.LogiLedSaveCurrentLighting();
             LogitechGSDK.LogiLedSetTargetDevice(LogitechGSDK.LOGI_DEVICETYPE_PERKEY_RGB);
 
-            // Disable keys we can't color
+            // Disable keys we can't color untill the SDK will allow it
             LogitechGSDK.LogiLedSetLighting(0, 0, 0);
         }
 
@@ -77,7 +77,13 @@ namespace Artemis.KeyboardProviders.Logitech
 
         public override void DrawBitmap(Bitmap bitmap)
         {
-            LogitechGSDK.LogiLedSetLightingFromBitmap(OrionUtilities.BitmapToByteArray(bitmap));
+            var fixedBmp = new Bitmap(bitmap.Width, bitmap.Height);
+            using (var g = Graphics.FromImage(fixedBmp))
+            {
+                g.Clear(Color.Black);
+                g.DrawImage(bitmap, 0, 0);
+            }
+            LogitechGSDK.LogiLedSetLightingFromBitmap(OrionUtilities.BitmapToByteArray(fixedBmp));
         }
     }
 }
