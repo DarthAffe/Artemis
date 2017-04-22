@@ -97,18 +97,23 @@ namespace Artemis.Profiles.Layers.Types.Audio.AudioCapturing
             }
         }
 
+        private LineSpectrum _lineSpectrum;
         public LineSpectrum GetLineSpectrum(int barCount, ScalingStrategy scalingStrategy)
         {
-            if (_spectrumProvider == null)
+            if (_spectrumProvider == null || barCount <= 0)
                 return null;
-            return new LineSpectrum(FftSize)
-            {
-                SpectrumProvider = _spectrumProvider,
-                UseAverage = true,
-                BarCount = barCount,
-                IsXLogScale = true,
-                ScalingStrategy = scalingStrategy
-            };
+
+            if (_lineSpectrum == null)
+                _lineSpectrum = new LineSpectrum(FftSize)
+                {
+                    SpectrumProvider = _spectrumProvider,
+                    UseAverage = true,
+                    BarCount = barCount,
+                    IsXLogScale = true,
+                    ScalingStrategy = scalingStrategy
+                };
+
+            return _lineSpectrum;
         }
 
         /// <summary>
@@ -182,6 +187,7 @@ namespace Artemis.Profiles.Layers.Types.Audio.AudioCapturing
                     }
                 };
 
+                _lineSpectrum = null;
                 _singleSpectrum = new SingleSpectrum(FftSize, _spectrumProvider);
                 _mayStop = false;
 

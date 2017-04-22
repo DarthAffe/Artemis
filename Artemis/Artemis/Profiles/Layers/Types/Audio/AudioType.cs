@@ -153,13 +153,8 @@ namespace Artemis.Profiles.Layers.Types.Audio
                 currentHeight = layerModel.Width;
             }
 
-            if (_lines != currentLines || _lineSpectrum == null)
-            {
-                _lines = currentLines;
-                _lineSpectrum = _audioCapture.GetLineSpectrum(_lines, ScalingStrategy.Decibel);
-                if (_lineSpectrum == null)
-                    return;
-            }
+            _lines = currentLines;
+            _lineSpectrum = _audioCapture.GetLineSpectrum(_lines, ScalingStrategy.Decibel);
 
             var newLineValues = _lineSpectrum?.GetLineValues(currentHeight);
             if (newLineValues != null)
